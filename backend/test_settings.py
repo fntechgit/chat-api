@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from django.utils.translation import ugettext_lazy as _
 
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 env = os.getenv('ENV')
@@ -289,7 +290,19 @@ OAUTH2 = {
         'ID': os.getenv('OAUTH2_CLIENT_ID'),
         'SECRET': os.getenv('OAUTH2_CLIENT_SECRET'),
         'ENDPOINTS': {
-
+            # user-roles
+            '/api/v1/user-roles': {
+                'delete': {
+                    'name': _('DeleteUserRole'),
+                    'desc': _('Delete User Role'),
+                    'scopes': os.getenv('OAUTH2_SCOPE_REMOVE_USER_ROLE')
+                },
+                'post': {
+                    'name': _('AddUser ole'),
+                    'desc': _('Register User Role'),
+                    'scopes': os.getenv('OAUTH2_SCOPE_ADD_USER_ROLE'),
+                }
+            },
         }
     }
 }

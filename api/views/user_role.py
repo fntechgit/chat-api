@@ -35,7 +35,7 @@ class UserRolesListAPIView(ViewSet):
 
 
 class UserRolesCreateAPIView(ViewSet):
-    authentication_classes = [] if config('DEBUG', False) else [OAuth2Authentication]
+    authentication_classes = [OAuth2Authentication]
 
     serializer_class = UserRoleWriteSerializer
 
