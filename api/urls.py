@@ -9,13 +9,9 @@ user_role_patterns = ([
                           path('', UserRolesCreateAPIView.as_view(
                               {
                                   'post': 'create',
-                              }
-                          ), name='create'),
-                          path('', UserRolesCreateAPIView.as_view(
-                              {
                                   'delete': 'remove',
                               }
-                          ), name='remove')
+                          ), name='create-remove'),
                       ], 'user-roles-write')
 
 public_urlpatterns = [
