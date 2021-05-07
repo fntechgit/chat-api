@@ -54,9 +54,9 @@ class UserRolesCreateAPIView(ViewSet):
     def remove(self, request, *args, **kwargs):
         try:
             logging.getLogger('api').debug('calling UserRolesListCreateAPIView::remove')
-            summit_id = request.query_params.get('summit_id', 0)
-            summit_event_id = request.query_params.get('summit_event_id', 0)
-            member_id = request.query_params.get('member_id', 0)
+            summit_id = int(request.query_params.get('summit_id', 0))
+            summit_event_id = int(request.query_params.get('summit_event_id', 0))
+            member_id = int(request.query_params.get('member_id', 0))
             if not summit_id:
                 raise ValidationError("summit_id is mandatory.")
             if not member_id:
