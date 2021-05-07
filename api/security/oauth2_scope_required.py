@@ -1,11 +1,11 @@
 import logging
 import re
+import os
 
 from django.contrib.admindocs.views import simplify_regex
 from django.core.exceptions import PermissionDenied
 from django.utils.functional import wraps
 from django.utils.translation import ugettext_lazy as _
-from ..utils import config
 from api.utils import config, is_empty
 
 _PATH_PARAMETER_COMPONENT_RE = re.compile(
@@ -23,6 +23,10 @@ def oauth2_scope_required():
 
             request = view.request
             token_info = request.auth
+
+            # shortcircuit
+            if os.getenv("ENV") == 'test':
+                return func(view, *args, **kwargs)
 
             path = simplify_regex(request.resolver_match.route)
             # Strip Django 2.0 convertors as they are incompatible with uritemplate format

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import UserRolesCreateAPIView, UserRolesListAPIView
+from .views import UserRolesCreateAPIView, UserRolesListAPIView, ChannelTypesAPIView
 
 user_role_read_patterns = ([
                                path('', UserRolesListAPIView.as_view({'get': 'list'}), name='index'),
@@ -14,10 +14,20 @@ user_role_patterns = ([
                           ), name='create-remove'),
                       ], 'user-roles-write')
 
+channel_types_patterns = ([
+                              path('/seed', ChannelTypesAPIView.as_view(
+                                  {
+                                      'post': 'seed',
+                                  }
+                              ), name='seed'),
+                          ], 'channel_types'
+)
+
 public_urlpatterns = [
     path('user-roles', include(user_role_read_patterns)),
 ]
 
 private_urlpatterns = [
     path('user-roles', include(user_role_patterns)),
+    path('channel-types', include(channel_types_patterns))
 ]

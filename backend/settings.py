@@ -12,16 +12,27 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 from django.utils.translation import ugettext_lazy as _
 
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+ENV = os.getenv("ENV")
+
+if ENV == 'test':
+    filename = '.env'
+    if ENV:
+        filename = '{filename}.{env}'.format(filename=filename, env=ENV)
+
+    ENV_FILE = os.path.join(CURRENT_PATH, filename)
+    load_dotenv(ENV_FILE)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
-ENV = os.getenv("ENV")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if ENV == 'production' else True
 
@@ -288,9 +299,17 @@ OAUTH2 = {
                     'scopes': os.getenv('OAUTH2_SCOPE_REMOVE_USER_ROLE')
                 },
                 'post': {
-                    'name': _('AddUser ole'),
+                    'name': _('AddUserRole'),
                     'desc': _('Register User Role'),
                     'scopes': os.getenv('OAUTH2_SCOPE_ADD_USER_ROLE'),
+                }
+            },
+            # channel-types
+            '/api/v1/channel-types/seed': {
+                'post': {
+                    'name': _('SeedChannelTypes'),
+                    'desc': _('Seed Channel Types'),
+                    'scopes': os.getenv('OAUTH2_SCOPE_SEED_CHANNEL_TYPE'),
                 }
             },
         }

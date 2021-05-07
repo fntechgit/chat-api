@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from ..security import OAuth2Authentication, oauth2_scope_required
 from ..serializers import UserRoleWriteSerializer
-from ..utils import config
 from ..models import AttendeeRolesService
 from rest_framework.settings import api_settings
+import os
 
 
 class UserRolesListAPIView(ViewSet):
@@ -35,7 +35,7 @@ class UserRolesListAPIView(ViewSet):
 
 
 class UserRolesCreateAPIView(ViewSet):
-    authentication_classes = [OAuth2Authentication]
+    authentication_classes = [] if os.getenv("ENV") == 'test' else [OAuth2Authentication]
 
     serializer_class = UserRoleWriteSerializer
 
