@@ -1,3 +1,5 @@
+import logging
+
 from injector import inject
 from rest_framework import exceptions
 from rest_framework.authentication import get_authorization_header, BaseAuthentication
@@ -28,5 +30,6 @@ class OAuth2Authentication(BaseAuthentication):
             access_token = request.GET['access_token']
         else:
             return None
-
+        logging.getLogger('oauth2').warning(
+            'OAuth2Authentication::authenticate access_token {access_token}'.format(access_token=access_token))
         return self.service.validate(access_token)

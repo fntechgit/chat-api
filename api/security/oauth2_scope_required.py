@@ -39,21 +39,25 @@ def oauth2_scope_required():
             endpoints = config('OAUTH2.CLIENT.ENDPOINTS')
 
             if token_info is None:
+                logging.getLogger('oauth2').warning(
+                    'oauth2_scope_required::decorator token info not present')
                 raise PermissionDenied(_("token info not present."))
 
             endpoint = endpoints[path] if path in endpoints else None
             if not endpoint:
+                logging.getLogger('oauth2').warning(
+                    'oauth2_scope_required::decorator endpoint info not present')
                 raise PermissionDenied(_("endpoint info not present."))
 
             endpoint = endpoint[method] if method in endpoint else None
             if not endpoint:
-                logging.getLogger('oauth2').debug('endpoint info not present')
+                logging.getLogger('oauth2').warning('endpoint info not present')
                 raise PermissionDenied(_("endpoint info not present."))
 
             required_scope = endpoint['scopes'] if 'scopes' in endpoint else None
 
             if is_empty(required_scope):
-                logging.getLogger('oauth2').debug('require scope is empty')
+                logging.getLogger('oauth2').warning('require scope is empty')
                 raise PermissionDenied(_("required scope not present."))
 
             if 'scope' in token_info:
@@ -67,6 +71,8 @@ def oauth2_scope_required():
                 if len(set.intersection(set(required_scope.split()), set(current_scope.split()))):
                     return func(view, *args, **kwargs)
 
+            logging.getLogger('oauth2').warning(
+                'oauth2_scope_required::decorator token scopes not present')
             raise PermissionDenied(_("token scopes not present"))
         return inner
     return decorator

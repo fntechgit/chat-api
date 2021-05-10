@@ -16,7 +16,7 @@ class AccessTokenService(AbstractAccessTokenService):
               Authenticate the request, given the access token.
               """
         cached_token_info = None
-
+        logging.getLogger('oauth2').debug('AccessTokenService::validate {access_token}'.format(access_token=access_token))
         # try get access_token from DB and check if not expired
         cached_token_info = cache.get(access_token)
 
