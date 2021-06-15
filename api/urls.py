@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import UserRolesCreateAPIView, UserRolesListAPIView, ChannelTypesAPIView
+from .views import UserRolesCreateAPIView, UserRolesListAPIView, ChannelTypesAPIView, SSOCreateAPIView
 
 user_role_read_patterns = ([
                                path('', UserRolesListAPIView.as_view({'get': 'list'}), name='index'),
@@ -15,7 +15,7 @@ user_role_patterns = ([
                       ], 'user-roles-write')
 
 sso_patterns = ([
-                          path('', UserRolesCreateAPIView.as_view(
+                          path('', SSOCreateAPIView.as_view(
                               {
                                   'post': 'sso',
                               }

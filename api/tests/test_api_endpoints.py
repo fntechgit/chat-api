@@ -24,8 +24,20 @@ class ApiEndpointTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_seed_channel_types(self):
-        access_token = 'TGzJUbuWKOtKrrn81.TDWcZrYLiaBH3WQT1b25OtLf26TTKyFNnnONcL-jPUQOHcD_0eT8p2Pcopr1PaCd6kPfaL1Y10FgeChreKfm2b8du8HRgWpk6N8auXX0z33RJN&'
+        access_token = 'ACCESS_TOKEN'
         url = reverse('channel_types:seed')
+
+        data = {}
+
+        response = self.client.post(
+            '{url}?access_token={access_token}&summit_id=17'.format(url=url, access_token=access_token),
+            data, format='json')
+        json_response = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_sso(self):
+        access_token = 'ACCESS_TOKEN'
+        url = reverse('user-sso:sso')
 
         data = {}
 
