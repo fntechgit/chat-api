@@ -38,7 +38,7 @@ class GetStreamService:
         return response
 
     def sso(self, user_id: int, user_full_name:str, role:str, pic:str):
-        token = self.gstream.create_token(user_id)
+        token = self.gstream.create_token(str(user_id))
         self.gstream.update_user({
             'id': str(user_id),
             'name': user_full_name,
