@@ -14,6 +14,14 @@ user_role_patterns = ([
                           ), name='create-remove'),
                       ], 'user-roles-write')
 
+sso_patterns = ([
+                          path('', UserRolesCreateAPIView.as_view(
+                              {
+                                  'post': 'sso',
+                              }
+                          ), name='sso'),
+                      ], 'user-sso')
+
 channel_types_patterns = ([
                               path('/seed', ChannelTypesAPIView.as_view(
                                   {
@@ -29,5 +37,6 @@ public_urlpatterns = [
 
 private_urlpatterns = [
     path('user-roles', include(user_role_patterns)),
+    path('sso', include(sso_patterns)),
     path('channel-types', include(channel_types_patterns))
 ]

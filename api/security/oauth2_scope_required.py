@@ -1,6 +1,7 @@
 import logging
 import re
 import os
+import json
 
 from django.contrib.admindocs.views import simplify_regex
 from django.core.exceptions import PermissionDenied
@@ -26,7 +27,7 @@ def oauth2_scope_required():
 
             # shortcircuit
             if os.getenv("ENV") == 'test':
-                return func(view, *args, **kwargs)
+                return func(view, token_info = {}, *args, **kwargs)
 
             path = simplify_regex(request.resolver_match.route)
             # Strip Django 2.0 convertors as they are incompatible with uritemplate format
@@ -42,6 +43,10 @@ def oauth2_scope_required():
                 logging.getLogger('oauth2').warning(
                     'oauth2_scope_required::decorator token info not present')
                 raise PermissionDenied(_("token info not present."))
+
+            logging.getLogger('oauth2').debug('oauth2_scope_required::decorator token_info {}'.format(
+                json.dumps(token_info)
+            ))
 
             endpoint = endpoints[path] if path in endpoints else None
             if not endpoint:
@@ -69,7 +74,7 @@ def oauth2_scope_required():
                 # check scopes
 
                 if len(set.intersection(set(required_scope.split()), set(current_scope.split()))):
-                    return func(view, *args, **kwargs)
+                    return func(view, token_info=token_info, *args, **kwargs)
 
             logging.getLogger('oauth2').warning(
                 'oauth2_scope_required::decorator token scopes not present')

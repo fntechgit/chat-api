@@ -12,6 +12,7 @@ class GetStreamService:
     supabase: Client = None
     # https://github.com/GetStream/stream-chat-python/
     gstream: StreamChat = None
+    api_key: str = None
 
     def __init__(self, summit_id:int):
         url: str = config("SUPABASE.URL")
@@ -26,7 +27,8 @@ class GetStreamService:
             raise Exception("Missing Summit GSTREAM Auth data.")
 
         row = result['data'][0]
-        self.gstream = StreamChat(api_key=row['api_key'], api_secret=row['api_secret'])
+        self.api_key = row['api_key']
+        self.gstream = StreamChat(self.api_key, api_secret=row['api_secret'])
 
     def create_user(self, user_id:int, user_full_name:str):
         response = self.gstream.update_user({
@@ -34,6 +36,24 @@ class GetStreamService:
             'id': str(user_id),
         })
         return response
+
+    def sso(self, user_id: int, user_full_name:str, role:str, pic:str):
+        token = self.gstream.create_token(user_id)
+        self.gstream.update_user({
+            'id': str(user_id),
+            'name': user_full_name,
+            'role': role,
+            'image': pic,
+        })
+
+        return {
+            'id': str(user_id),
+            'name': user_full_name,
+            'role': role,
+            'image': pic,
+            'token': token,
+            'api_key': self.api_key
+        }
 
     def seed_channel_types(self):
 

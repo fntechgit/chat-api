@@ -312,6 +312,14 @@ OAUTH2 = {
                     'scopes': os.getenv('OAUTH2_SCOPE_SEED_CHANNEL_TYPE'),
                 }
             },
+            # sso
+            '/api/v1/sso': {
+                'post': {
+                    'name': _('UserSSO'),
+                    'desc': _('User SSO'),
+                    'scopes': os.getenv('OAUTH2_SCOPE_SSO'),
+                }
+            },
         }
     }
 }
