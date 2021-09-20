@@ -39,8 +39,9 @@ class GetStreamService:
 
     def sso(self, user_id: int, user_first_name:str, user_last_name:str, role:str, pic:str):
         token = self.gstream.create_token(str(user_id))
-        user_full_name = '{} {}'.format(user_first_name, user_last_name),
+        user_full_name = '{} {}'.format(user_first_name, user_last_name)
         logging.getLogger('api').debug('sso user_id {} first name {} last name {} fullname {} role {}'.format(user_id , user_first_name, user_last_name, user_full_name, role))
+
         self.gstream.update_user({
             'id': str(user_id),
             'name': user_full_name,
