@@ -44,7 +44,8 @@ class SSOCreateAPIView(ViewSet):
             res = service.sso\
                 (
                     token_info['user_id'],
-                    '{} {}'.format(token_info['user_first_name'],token_info['user_last_name']),
+                    token_info['user_first_name'],
+                    token_info['user_last_name'],
                     role,
                     token_info['user_pic'],
                 )

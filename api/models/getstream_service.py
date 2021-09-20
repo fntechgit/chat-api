@@ -37,11 +37,14 @@ class GetStreamService:
         })
         return response
 
-    def sso(self, user_id: int, user_full_name:str, role:str, pic:str):
+    def sso(self, user_id: int, user_first_name:str, user_last_name:str, role:str, pic:str):
         token = self.gstream.create_token(str(user_id))
+        user_full_name = '{} {}'.format(user_first_name, user_last_name),
         self.gstream.update_user({
             'id': str(user_id),
             'name': user_full_name,
+            'first_name': user_first_name,
+            'last_name' : user_last_name,
             'role': role,
             'image': pic,
         })
@@ -49,6 +52,8 @@ class GetStreamService:
         return {
             'id': str(user_id),
             'name': user_full_name,
+            'first_name': user_first_name,
+            'last_name': user_last_name,
             'role': role,
             'image': pic,
             'token': token,
@@ -56,7 +61,7 @@ class GetStreamService:
         }
 
     def seed_channel_types(self):
-
+        # @see https://getstream.io/chat/docs/python/resources/?language=python
         channel_types = [
             {
                 "name": "activity_room",
@@ -190,7 +195,7 @@ class GetStreamService:
                     dict(
                         name="Channel Members",
                         priority=200,
-                        resources=["ReadChannel", "CreateMessage"],
+                        resources=["ReadChannel", "CreateMessage", "CreateChannel"],
                         roles=["channel_member"],
                         owner=False,
                         action="Allow",
@@ -238,7 +243,7 @@ class GetStreamService:
                     dict(
                         name="Channel Members",
                         priority=200,
-                        resources=["ReadChannel", "CreateMessage"],
+                        resources=["ReadChannel", "CreateMessage", "CreateChannel"],
                         roles=["channel_member"],
                         owner=False,
                         action="Allow",
@@ -263,6 +268,7 @@ class GetStreamService:
             try:
                 # try to get it first
                 response = self.gstream.get_channel_type(channel_type_def['name'])
+                self.gstream.update_channel_type(channel_type_def['name'], )
             except StreamAPIException as e:
                 logging.getLogger('api').warning(e)
                 try:
