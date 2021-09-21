@@ -96,24 +96,13 @@ class UserRolesCreateAPIView(ViewSet):
         try:
             logging.getLogger('api').debug('calling UserRolesListCreateAPIView::sso')
             summit_id = int(request.query_params.get('summit_id', 0))
+
             if not summit_id:
                 raise ValidationError("summit_id is mandatory.")
-            service = GetStreamService(summit_id)
-            role = "user"
-            groups = token_info['user_groups']
-            for group in groups:
-                if group['slug'] == 'administrators' or group['slug'] == 'super-admins':
-                    role = 'admin'
-                    break
 
-            res = service.sso\
-                (
-                    token_info['user_id'],
-                    token_info['user_first_name'],
-                    token_info['user_last_name'],
-                    role,
-                    token_info['user_pic'],
-                )
+            service = GetStreamService(summit_id)
+            res = service.sso(token_info)
+
             return Response(res, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             logging.getLogger('api').warning(e)

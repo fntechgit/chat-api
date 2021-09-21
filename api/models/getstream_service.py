@@ -37,9 +37,22 @@ class GetStreamService:
         })
         return response
 
-    def sso(self, user_id: int, user_first_name:str, user_last_name:str, role:str, pic:str):
+    def sso(self, user_info):
+
+        role = "user"
+        groups = user_info['user_groups']
+        for group in groups:
+            if group['slug'] == 'administrators' or group['slug'] == 'super-admins':
+                role = 'admin'
+                break
+
+        user_id = user_info['user_id'],
+        user_first_name = user_info['user_first_name'],
+        user_last_name = user_info['user_last_name'],
+        pic = user_info ['user_pic'],
         token = self.gstream.create_token(str(user_id))
         user_full_name = '{} {}'.format(user_first_name, user_last_name)
+        show_fullname = bool(user_info['user_public_profile_show_fullname'])
         logging.getLogger('api').debug('sso user_id {} first name {} last name {} fullname {} role {}'.format(user_id , user_first_name, user_last_name, user_full_name, role))
 
         self.gstream.update_user({
@@ -49,6 +62,7 @@ class GetStreamService:
             'last_name' : str(user_last_name),
             'role': str(role),
             'image': str(pic),
+            'show_fullname' : show_fullname
         })
 
         return {
@@ -59,7 +73,8 @@ class GetStreamService:
             'role': str(role),
             'image': str(pic),
             'token': token,
-            'api_key': self.api_key
+            'api_key': self.api_key,
+            'show_fullname': show_fullname
         }
 
     def seed_channel_types(self):
