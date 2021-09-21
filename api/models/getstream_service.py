@@ -44,20 +44,20 @@ class GetStreamService:
 
         self.gstream.update_user({
             'id': str(user_id),
-            'name': user_full_name,
-            'first_name': user_first_name,
-            'last_name' : user_last_name,
-            'role': role,
-            'image': pic,
+            'name': str(user_full_name),
+            'first_name': str(user_first_name),
+            'last_name' : str(user_last_name),
+            'role': str(role),
+            'image': str(pic),
         })
 
         return {
             'id': str(user_id),
-            'name': user_full_name,
-            'first_name': user_first_name,
-            'last_name': user_last_name,
-            'role': role,
-            'image': pic,
+            'name': str(user_full_name),
+            'first_name': str(user_first_name),
+            'last_name': str(user_last_name),
+            'role': str(role),
+            'image': str(pic),
             'token': token,
             'api_key': self.api_key
         }
