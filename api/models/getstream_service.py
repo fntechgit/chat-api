@@ -46,13 +46,15 @@ class GetStreamService:
                 role = 'admin'
                 break
 
-        user_id = user_info['user_id'],
-        user_first_name = user_info['user_first_name'],
-        user_last_name = user_info['user_last_name'],
-        pic = user_info ['user_pic'],
-        token = self.gstream.create_token(str(user_id))
+        user_id = user_info['user_id']
+        user_first_name = user_info['user_first_name']
+        user_last_name = user_info['user_last_name']
+        pic = user_info ['user_pic']
         user_full_name = '{} {}'.format(user_first_name, user_last_name)
         show_fullname = bool(user_info['user_public_profile_show_fullname'])
+
+        token = self.gstream.create_token(str(user_id))
+
         logging.getLogger('api').debug('sso user_id {} first name {} last name {} fullname {} role {}'.format(user_id , user_first_name, user_last_name, user_full_name, role))
 
         self.gstream.update_user({
