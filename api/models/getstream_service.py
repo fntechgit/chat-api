@@ -290,7 +290,7 @@ class GetStreamService:
 
                 if response is None:
                     response = self.gstream.get_channel_type(channel_type_def['name'])
-                    cache.set(channel_type_def['name'], response.json())
+                    cache.set(channel_type_def['name'], response)
                     self.gstream.update_channel_type(channel_type_def['name'], permissions = channel_type_def['permissions'])
 
             except StreamAPIException as e:
