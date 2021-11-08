@@ -5,7 +5,7 @@ from stream_chat.base.exceptions import StreamAPIException
 from ..utils import config
 from supabase_py import create_client, Client
 from stream_chat import StreamChat
-
+from django.core.cache import cache
 
 class GetStreamService:
 
@@ -286,8 +286,13 @@ class GetStreamService:
             response = None
             try:
                 # try to get it first
-                response = self.gstream.get_channel_type(channel_type_def['name'])
-                self.gstream.update_channel_type(channel_type_def['name'], permissions = channel_type_def['permissions'])
+                response = cache.get(channel_type_def['name'])
+
+                if response is None:
+                    response = self.gstream.get_channel_type(channel_type_def['name'])
+                    cache.set(channel_type_def['name'], response.json())
+                    self.gstream.update_channel_type(channel_type_def['name'], permissions = channel_type_def['permissions'])
+
             except StreamAPIException as e:
                 logging.getLogger('api').warning(e)
                 try:
@@ -298,4 +303,5 @@ class GetStreamService:
                     logging.getLogger('api').warning(e)
             if response is not None:
                 responses.append(response)
+
         return responses
