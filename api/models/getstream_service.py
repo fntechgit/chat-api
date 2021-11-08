@@ -289,13 +289,14 @@ class GetStreamService:
             response = None
             try:
                 # try to get it first
+                logging.getLogger('api').debug('GetStreamService::seed_channel_types trying checking cache for {name}'.format(name=channel_type_def['name']))
                 response = cache.get(channel_type_def['name'])
-                if response is not None:
-                    logging.getLogger('api').debug('GetStreamService::seed_channel_types got response from cache for '
-                                                   '{name}'.format(name=channel_type_def['name']))
+
                 if response is None:
+                    logging.getLogger('api').debug('GetStreamService::seed_channel_types missing cache hit for'
+                                                   '{name}'.format(name=channel_type_def['name']))
                     response = self.gstream.get_channel_type(channel_type_def['name'])
-                    cache.set(channel_type_def['name'], response)
+                    cache.set(channel_type_def['name'], response, 3600)
                     self.gstream.update_channel_type(channel_type_def['name'],
                                                      permissions=channel_type_def['permissions'])
 
