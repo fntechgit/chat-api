@@ -7,19 +7,19 @@ from supabase_py import create_client, Client
 from stream_chat import StreamChat
 from django.core.cache import cache
 
-class GetStreamService:
 
+class GetStreamService:
     supabase: Client = None
     # https://github.com/GetStream/stream-chat-python/
     gstream: StreamChat = None
     api_key: str = None
 
-    def __init__(self, summit_id:int):
+    def __init__(self, summit_id: int):
         url: str = config("SUPABASE.URL")
         key: str = config("SUPABASE.KEY")
         self.supabase = create_client(url, key)
-        result = self.supabase\
-            .from_("summit_getstream_apps")\
+        result = self.supabase \
+            .from_("summit_getstream_apps") \
             .select('*') \
             .eq("summit_id", str(summit_id)) \
             .execute()
@@ -30,9 +30,9 @@ class GetStreamService:
         self.api_key = row['api_key']
         self.gstream = StreamChat(self.api_key, api_secret=row['api_secret'])
 
-    def create_user(self, user_id:int, user_full_name:str):
+    def create_user(self, user_id: int, user_full_name: str):
         response = self.gstream.update_user({
-            'name' : user_full_name,
+            'name': user_full_name,
             'id': str(user_id),
         })
         return response
@@ -49,22 +49,25 @@ class GetStreamService:
         user_id = user_info['user_id']
         user_first_name = user_info['user_first_name']
         user_last_name = user_info['user_last_name']
-        pic = user_info ['user_pic']
+        pic = user_info['user_pic']
         user_full_name = '{} {}'.format(user_first_name, user_last_name)
         show_fullname = bool(user_info['user_public_profile_show_fullname'])
 
         token = self.gstream.create_token(str(user_id))
 
-        logging.getLogger('api').debug('sso user_id {} first name {} last name {} fullname {} role {}'.format(user_id , user_first_name, user_last_name, user_full_name, role))
+        logging.getLogger('api').debug(
+            'sso user_id {} first name {} last name {} fullname {} role {}'.format(user_id, user_first_name,
+                                                                                   user_last_name, user_full_name,
+                                                                                   role))
 
         self.gstream.update_user({
             'id': str(user_id),
             'name': str(user_full_name),
             'first_name': str(user_first_name),
-            'last_name' : str(user_last_name),
+            'last_name': str(user_last_name),
             'role': str(role),
             'image': str(pic),
-            'show_fullname' : show_fullname
+            'show_fullname': show_fullname
         })
 
         return {
@@ -120,7 +123,7 @@ class GetStreamService:
                     dict(
                         name="Channel Members",
                         priority=200,
-                        resources= ["ReadChannel", "CreateMessage"],
+                        resources=["ReadChannel", "CreateMessage"],
                         roles=["channel_member"],
                         owner=False,
                         action="Allow",
@@ -287,11 +290,14 @@ class GetStreamService:
             try:
                 # try to get it first
                 response = cache.get(channel_type_def['name'])
-
+                if response is not None:
+                    logging.getLogger('api').debug('GetStreamService::seed_channel_types got response from cache for '
+                                                   '{name}'.format(name=channel_type_def['name']))
                 if response is None:
                     response = self.gstream.get_channel_type(channel_type_def['name'])
                     cache.set(channel_type_def['name'], response)
-                    self.gstream.update_channel_type(channel_type_def['name'], permissions = channel_type_def['permissions'])
+                    self.gstream.update_channel_type(channel_type_def['name'],
+                                                     permissions=channel_type_def['permissions'])
 
             except StreamAPIException as e:
                 logging.getLogger('api').warning(e)
