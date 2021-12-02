@@ -18,11 +18,6 @@ class GetStreamService:
         cache_key_api_secret = 'api_secret_{summit_id}'.format(summit_id=summit_id)
         api_key = cache.get(cache_key_api_key)
         api_secret = cache.get(cache_key_api_secret)
-
-        if summit_id == 31 :
-            api_key = 'bkuud6qz89j3'
-            api_secret = '98dtenuvbe4cw2234epwegtxwdxf47t2ct8mezu8ma249kbryy4ta344rzukwcxt'
-
         url: str = config("SUPABASE.URL")
         key: str = config("SUPABASE.KEY")
 
@@ -48,6 +43,7 @@ class GetStreamService:
 
         self.api_key = api_key
         try:
+            logging.getLogger('api').debug('trying to create gstream client with key {key}'.format(key=self.api_key))
             self.gstream = StreamChat(self.api_key, api_secret=api_secret)
         except:
             logging.getLogger('api').error(traceback.format_exc())
