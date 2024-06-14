@@ -46,3 +46,15 @@ class ApiEndpointTest(APITestCase):
             data, format='json')
         json_response = json.loads(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_sso_auth_data_not_found(self):
+        access_token = 'ACCESS_TOKEN'
+        url = reverse('user-sso:sso')
+
+        data = {}
+
+        response = self.client.post(
+            '{url}?access_token={access_token}&summit_id=1'.format(url=url, access_token=access_token),
+            data, format='json')
+        json_response = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_412_PRECONDITION_FAILED)

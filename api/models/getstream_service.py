@@ -1,4 +1,6 @@
 import logging
+
+from rest_framework.exceptions import ValidationError
 from stream_chat.base.exceptions import StreamAPIException
 from ..utils import config
 from supabase_py import create_client, Client
@@ -31,13 +33,16 @@ class GetStreamService:
                     .eq("summit_id", str(summit_id)) \
                     .execute()
                 if not len(result['data']):
-                    raise Exception("Missing Summit GSTREAM Auth data.")
+                    raise ValidationError("Missing Summit GSTREAM Auth data.")
                 row = result['data'][0]
                 api_key = row['api_key']
                 api_secret = row['api_secret']
-                cache.set(cache_key_api_key, api_key , 7200)
+                cache.set(cache_key_api_key, api_key, 7200)
                 cache.set(cache_key_api_secret, api_secret, 7200)
-            except:
+            except ValidationError as e:
+                logging.getLogger('api').warning(e)
+                raise
+            except Exception:
                 logging.getLogger('api').error(traceback.format_exc())
                 raise Exception('SUPABASE connection error')
 
