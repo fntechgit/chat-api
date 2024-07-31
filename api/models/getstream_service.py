@@ -115,6 +115,9 @@ class GetStreamService:
                 'api_key': self.api_key,
                 'show_fullname': show_fullname
             }
+        except StreamAPIException as e:
+            logging.getLogger('api').warning(e)
+            raise ValidationError("ERROR on GS API")
         except:
             logging.getLogger('api').error(traceback.format_exc())
             raise Exception('sso: GSStream connection error')
@@ -350,6 +353,9 @@ class GetStreamService:
                     responses.append(response)
 
             return responses
+        except StreamAPIException as e:
+            logging.getLogger('api').warning(e)
+            raise ValidationError("ERROR on GS API")
         except:
             logging.getLogger('api').error(traceback.format_exc())
             raise Exception('seed_channel_types: GSStream connection error')
