@@ -86,6 +86,15 @@ class GetStreamService:
             pic = user_info['user_pic']
             user_full_name = '{} {}'.format(user_first_name, user_last_name)
             show_fullname = bool(user_info['user_public_profile_show_fullname'])
+            show_email = bool(user_info['user_public_profile_show_email'])
+            show_photo = bool(user_info['user_public_profile_show_photo'])
+            show_bio = bool(user_info['user_public_profile_show_bio'])
+            show_social_media = bool(user_info['user_public_profile_show_social_media_info'])
+
+            if not show_fullname:
+                user_full_name = user_first_name = user_last_name = 'Anonymous'
+            if not show_photo:
+                pic = config('USER_GENERIC_PIC')
 
             token = self.gstream.create_token(str(user_id))
 
@@ -101,7 +110,11 @@ class GetStreamService:
                 'last_name': str(user_last_name),
                 'role': str(role),
                 'image': str(pic),
-                'show_fullname': show_fullname
+                'show_fullname': show_fullname,
+                'show_email': show_email,
+                'show_photo': show_photo,
+                'show_bio': show_bio,
+                'show_social_media': show_social_media
             })
 
             return {
@@ -113,7 +126,11 @@ class GetStreamService:
                 'image': str(pic),
                 'token': token,
                 'api_key': self.api_key,
-                'show_fullname': show_fullname
+                'show_fullname': show_fullname,
+                'show_email': show_email,
+                'show_photo': show_photo,
+                'show_bio': show_bio,
+                'show_social_media': show_social_media
             }
         except StreamAPIException as e:
             logging.getLogger('api').warning(e)

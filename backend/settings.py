@@ -290,6 +290,7 @@ OAUTH2 = {
     'CLIENT': {
         'ID': os.getenv('OAUTH2_CLIENT_ID'),
         'SECRET': os.getenv('OAUTH2_CLIENT_SECRET'),
+        'ACCESS_TOKEN_CACHE_LIFETIME': os.getenv('OAUTH2_ACCESS_TOKEN_CACHE'),
         'ENDPOINTS': {
             # user-roles
             '/api/v1/user-roles': {
@@ -341,4 +342,6 @@ DEV_EMAIL = os.getenv('DEV_EMAIL')
 SUPABASE = {
     'URL': os.getenv('SUPABASE_URL'),
     'KEY': os.getenv('SUPABASE_KEY')
-};
+}
+
+USER_GENERIC_PIC = os.getenv('USER_GENERIC_PIC')
